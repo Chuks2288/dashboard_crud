@@ -7,6 +7,15 @@ import {
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import {
+  AccountCircleOutlined,
+  ChatBubbleOutline,
+  // Home,
+  PeopleAltOutlined,
+  StarOutlineRounded,
+  VillaOutlined,
+} from '@mui/icons-material';
+
+import {
   ErrorComponent,
   notificationProvider,
   RefineSnackbarProvider,
@@ -22,19 +31,19 @@ import routerBindings, {
 import dataProvider from "@refinedev/simple-rest";
 import axios, { AxiosRequestConfig } from "axios";
 import { CredentialResponse } from "interfaces/google";
+
 import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "pages/categories";
-import { Login } from "pages/login";
+  AgentProfile,
+  Agents,
+  AllProperties,
+  CreateProperty,
+  Home,
+  Login,
+  MyProfile,
+  PropertyDetails,
+  EditProperty
+} from "pages";
+
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { parseJwt } from "utils/parse-jwt";
 import { Header } from "./components/header";
@@ -133,7 +142,6 @@ function App() {
 
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <CssBaseline />
@@ -144,27 +152,41 @@ function App() {
               notificationProvider={notificationProvider}
               routerProvider={routerBindings}
               authProvider={authProvider}
+              DashboardPage={Home}
               resources={[
                 {
-                  name: "blog_posts",
-                  list: "/blog-posts",
-                  create: "/blog-posts/create",
-                  edit: "/blog-posts/edit/:id",
-                  show: "/blog-posts/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
+                  name: "property",
+                  list: AllProperties,
+                  show: PropertyDetails,
+                  create: CreateProperty,
+                  edit: EditProperty,
+                  icon: <VillaOutlined />
                 },
                 {
-                  name: "categories",
-                  list: "/categories",
-                  create: "/categories/create",
-                  edit: "/categories/edit/:id",
-                  show: "/categories/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
+                  name: "agent",
+                  list: Agents,
+                  show: AgentProfile,
+                  icon: <PeopleAltOutlined />
                 },
+                {
+                  name: "Review",
+                  list: "review",
+                  icon: <StarOutlineRounded />
+                },
+                {
+                  name: "Message",
+                  list: "message",
+                  icon: <ChatBubbleOutline />
+                },
+                {
+                  name: "My Profile",
+                  options: {
+                    label: "My Profile",
+                  },
+                  list: MyProfile,
+                  icon: <AccountCircleOutlined />
+                },
+
               ]}
               options={{
                 syncWithLocation: true,
@@ -174,29 +196,28 @@ function App() {
               <Routes>
                 <Route
                   element={
+
                     <Authenticated fallback={<CatchAllNavigate to="/login" />}>
                       <ThemedLayoutV2 Header={Header}>
                         <Outlet />
+                        <Home />
                       </ThemedLayoutV2>
+
                     </Authenticated>
                   }
                 >
                   <Route
                     index
-                    element={<NavigateToResource resource="blog_posts" />}
+                    element={<NavigateToResource resource="Home" />}
                   />
-                  <Route path="/blog-posts">
-                    <Route index element={<BlogPostList />} />
-                    <Route path="create" element={<BlogPostCreate />} />
-                    <Route path="edit/:id" element={<BlogPostEdit />} />
-                    <Route path="show/:id" element={<BlogPostShow />} />
-                  </Route>
-                  <Route path="/categories">
-                    <Route index element={<CategoryList />} />
-                    <Route path="create" element={<CategoryCreate />} />
-                    <Route path="edit/:id" element={<CategoryEdit />} />
-                    <Route path="show/:id" element={<CategoryShow />} />
-                  </Route>
+
+                  <Route path="/" element={<Home />} />
+                  <Route path="/agents" element={<Agents />} />
+                  <Route path="/all-properties" element={<AllProperties />} />
+                  <Route path="/create-property" element={<CreateProperty />} />
+                  <Route path="/my-profile" element={<MyProfile />} />
+                  <Route path="/property-details" element={<PropertyDetails />} />
+                  <Route path="/edit-proerty" element={<EditProperty />} />
                 </Route>
                 <Route
                   element={
